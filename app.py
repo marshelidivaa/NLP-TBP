@@ -12,7 +12,7 @@ from groq import Groq
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DOSEN_JSON = os.path.join(BASE_DIR, "dosen_sinta.json")
 KURIKULUM_PDF = os.path.join(BASE_DIR, "Kurikulum Sadat.pdf")
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "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")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 # ── CSS ─────────────────────────────────────────────────────────────────────
 CSS = """
@@ -94,47 +94,79 @@ CSS = """
 
 /* ── hero ── */
 .hero {
-    background:linear-gradient(135deg,rgba(144,202,249,0.45) 0%,rgba(227,242,253,0.7) 100%);
+    background:linear-gradient(135deg,rgba(144,202,249,0.38) 0%,rgba(227,242,253,0.75) 100%);
     border:1.5px solid rgba(33,150,243,0.22);
-    border-radius:22px; padding:1.8rem 2rem 1.5rem;
-    text-align:center; margin-bottom:1rem;
-    position:relative; overflow:hidden;
+    border-radius:22px; padding:1.6rem 2rem 1.5rem;
+    margin-bottom:1rem; position:relative; overflow:hidden;
     box-shadow:0 8px 40px rgba(33,150,243,0.1),inset 0 1px 0 rgba(255,255,255,0.8);
-    transition:box-shadow 0.3s ease;
+    animation:fadeInUp 0.45s ease both;
 }
-.hero:hover { box-shadow:0 12px 48px rgba(33,150,243,0.16),inset 0 1px 0 rgba(255,255,255,0.8); }
 .hero::before {
-    content:''; position:absolute; top:-60px; right:-60px;
-    width:200px; height:200px;
-    background:radial-gradient(circle,rgba(100,181,246,0.28) 0%,transparent 70%);
+    content:''; position:absolute; top:-50px; right:-50px;
+    width:180px; height:180px;
+    background:radial-gradient(circle,rgba(100,181,246,0.25) 0%,transparent 70%);
     border-radius:50%; animation:floatBlob 6s ease-in-out infinite;
 }
 .hero::after {
-    content:''; position:absolute; bottom:-40px; left:-40px;
-    width:150px; height:150px;
-    background:radial-gradient(circle,rgba(144,202,249,0.3) 0%,transparent 70%);
+    content:''; position:absolute; bottom:-35px; left:-35px;
+    width:140px; height:140px;
+    background:radial-gradient(circle,rgba(144,202,249,0.28) 0%,transparent 70%);
     border-radius:50%; animation:floatBlob 8s ease-in-out infinite reverse;
 }
-.hero-eyebrow {
-    display:inline-flex; align-items:center; gap:0.4rem;
-    background:rgba(100,181,246,0.2); border:1px solid rgba(33,150,243,0.3);
-    color:#1565C0; font-size:0.68rem; font-weight:700;
-    letter-spacing:0.1em; text-transform:uppercase;
-    padding:0.22rem 0.9rem; border-radius:999px; margin-bottom:0.8rem;
+
+/* hero top bar */
+.hero-topbar {
+    display:flex; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; gap:0.8rem; margin-bottom:1.4rem;
 }
+.hero-brand { display:flex; align-items:center; gap:0.9rem; }
 .hero-title {
-    font-size:2.2rem; font-weight:800; line-height:1.1;
+    font-size:1.9rem; font-weight:800; line-height:1;
     background:linear-gradient(135deg,#0D47A1,#1976D2,#42A5F5);
     background-size:200% auto;
     -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
     animation:shimmer 6s linear infinite;
-    margin:0 0 0.35rem;
+    margin:0 0 0.15rem;
 }
-.hero-sub { color:rgba(21,101,192,0.65); font-size:0.9rem; margin:0; }
-.hero-stats { display:flex; justify-content:center; gap:2rem; margin-top:1rem; flex-wrap:wrap; }
-.hero-stat { text-align:center; }
-.hero-stat-num { font-size:1.6rem; font-weight:800; color:#1976D2; display:block; }
-.hero-stat-label { font-size:0.72rem; color:rgba(21,101,192,0.55); font-weight:600; text-transform:uppercase; letter-spacing:0.06em; }
+.hero-sub { color:rgba(21,101,192,0.55); font-size:0.78rem; margin:0; font-weight:500; }
+.hero-pills { display:flex; gap:0.5rem; flex-wrap:wrap; }
+.hero-pill {
+    background:rgba(255,255,255,0.7); border:1px solid rgba(33,150,243,0.22);
+    border-radius:999px; padding:0.28rem 0.85rem;
+    font-size:0.7rem; font-weight:700; color:#1565C0;
+    display:flex; align-items:center; gap:0.4rem;
+}
+.hero-pill-num { font-size:0.95rem; font-weight:800; color:#1976D2; }
+
+/* how it works */
+.how-wrap {
+    display:flex; align-items:stretch; gap:0; position:relative;
+}
+.how-step {
+    flex:1; background:rgba(255,255,255,0.62);
+    border:1px solid rgba(33,150,243,0.18); border-radius:14px;
+    padding:1rem 1.1rem; position:relative;
+    transition:all 0.25s ease;
+}
+.how-step:hover { background:rgba(255,255,255,0.85); transform:translateY(-2px); box-shadow:0 6px 20px rgba(25,118,210,0.1); }
+.how-num {
+    font-size:0.58rem; font-weight:800; letter-spacing:0.12em;
+    color:rgba(25,118,210,0.4); text-transform:uppercase; margin-bottom:0.5rem;
+}
+.how-icon {
+    width:32px; height:32px; border-radius:10px;
+    background:linear-gradient(135deg,rgba(144,202,249,0.5),rgba(187,222,251,0.6));
+    border:1px solid rgba(33,150,243,0.2);
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.9rem; margin-bottom:0.55rem;
+}
+.how-title { font-size:0.85rem; font-weight:700; color:#0D47A1; margin-bottom:0.3rem; }
+.how-desc  { font-size:0.73rem; color:rgba(13,59,110,0.55); line-height:1.55; }
+.how-arrow {
+    display:flex; align-items:center; padding:0 0.5rem;
+    color:rgba(33,150,243,0.4); font-size:1.1rem; flex-shrink:0;
+    font-weight:300;
+}
 
 /* ── input section ── */
 .input-wrap {
@@ -1206,7 +1238,7 @@ def main():
         col_d, col_s = st.columns([2.5, 1], gap="large")
         with col_d:
             st.markdown('<div class="sec-head">Mata Kuliah yang Paling Relevan</div>', unsafe_allow_html=True)
-            st.markdown('<div class="info-box">Mata kuliah di bawah ini dipilih secara semantik berdasarkan kecocokan makna.</div>', unsafe_allow_html=True)
+            st.markdown('<div class="info-box">Mata kuliah di bawah ini dipilih secara semantik berdasarkan kecocokan makna — bukan sekadar kesamaan kata.</div>', unsafe_allow_html=True)
             for doc, sc in hasil.get("kurikulum", []):
                 mk = doc.metadata.get("mata_kuliah", "—")
                 pct = min(sc / 0.5 * 100, 100)
@@ -1363,7 +1395,7 @@ def main():
         st.markdown(
             '<div class="info-box">'
             'Analisis ini dihasilkan oleh '
-            'berdasarkan data dosen dan kurikulum.'
+            'berdasarkan data dosen dan kurikulum — bukan pengetahuan umum.'
             '</div>',
             unsafe_allow_html=True,
         )
